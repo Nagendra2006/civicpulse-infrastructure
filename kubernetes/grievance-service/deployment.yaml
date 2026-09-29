@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: grievance-service
+  namespace: civicpulse
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: grievance-service
+
+  template:
+    metadata:
+      labels:
+        app: grievance-service
+
+    spec:
+      containers:
+        - name: grievance-service
+
+          image: illuriganesh123/civicpulse-grievance-service:13
+
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8082
+
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://grievance-mysql:3306/civicpulse_grievance_db
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: AZURE_STORAGE_CONNECTION_STRING
+
+            - name: AZURE_STORAGE_CONTAINER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: AZURE_STORAGE_CONTAINER_NAME
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
