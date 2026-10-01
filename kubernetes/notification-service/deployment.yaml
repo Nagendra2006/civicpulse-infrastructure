@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: civicpulse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: illuriganesh123/civicpulse-notification-service:2
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8083
+
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://notification-mysql:3306/civicpulse_notification_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+
+            - name: SPRING_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_MAIL_USERNAME
+
+            - name: SPRING_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_MAIL_PASSWORD

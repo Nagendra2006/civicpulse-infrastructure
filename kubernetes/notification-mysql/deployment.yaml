@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-mysql
+  namespace: civicpulse
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: notification-mysql
+
+  template:
+    metadata:
+      labels:
+        app: notification-mysql
+
+    spec:
+      containers:
+        - name: notification-mysql
+          image: mysql:8.0
+
+          ports:
+            - containerPort: 3306
+
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+
+            - name: MYSQL_DATABASE
+              value: civicpulse_notification_db
