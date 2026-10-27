@@ -1,0 +1,16 @@
+{{- range $key, $db := .Values.databases }}{{- if ne $key "persistence" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $db.name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ $db.name }}
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+{{- end }}{{- end }}

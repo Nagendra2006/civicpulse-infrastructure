@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-23T07:01:02.195536Z",
+  "service": "grievance-service",
+  "target_canary_image": "illuriganesh123/civicpulse-grievance-service:14",
+  "stable_image_baseline": "illuriganesh123/civicpulse-grievance-service:13",
+  "telemetry_intervals": [
+    {
+      "interval": 1,
+      "pod": "grievance-service-canary-568bdc7c85-mkcb8",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 200,
+      "latency_ms": 145.6,
+      "actuator_status": "UP",
+      "error": false,
+      "error_msg": ""
+    },
+    {
+      "interval": 2,
+      "pod": "grievance-service-canary-568bdc7c85-mkcb8",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 200,
+      "latency_ms": 154.66,
+      "actuator_status": "UP",
+      "error": false,
+      "error_msg": ""
+    },
+    {
+      "interval": 3,
+      "pod": "grievance-service-canary-568bdc7c85-mkcb8",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 200,
+      "latency_ms": 108.53,
+      "actuator_status": "UP",
+      "error": false,
+      "error_msg": ""
+    }
+  ],
+  "summary": {
+    "total_intervals": 3,
+    "error_count": 0,
+    "error_rate": 0.0,
+    "reasons": []
+  },
+  "decision": "PROMOTE",
+  "promotion_timestamp": "2026-10-23T07:01:44.474406Z",
+  "promotion_duration_seconds": 42.28,
+  "final_health": "HEALTHY",
+  "active_image": "illuriganesh123/civicpulse-grievance-service:14"
+}

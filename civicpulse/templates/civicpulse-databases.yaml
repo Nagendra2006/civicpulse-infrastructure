@@ -1,0 +1,43 @@
+{{- range $key, $db := .Values.databases }}{{- if ne $key "persistence" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $db.name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: {{ $db.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $db.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $db.name }}
+    spec:
+      containers:
+        - name: {{ $db.name }}
+          image: {{ $db.image | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $db.secretName }}
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: MYSQL_DATABASE
+              value: {{ $db.database | quote }}
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+{{- with $db.resources }}
+          resources:
+{{ toYaml . | nindent 12 }}
+{{- end }}
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: {{ $db.name }}-pvc
+---
+{{- end }}{{- end }}

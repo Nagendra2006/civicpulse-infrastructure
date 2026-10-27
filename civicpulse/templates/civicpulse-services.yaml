@@ -1,0 +1,16 @@
+{{- range $key, $service := .Values.services }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{- if eq $key "frontend" }} frontend-service{{- else }} {{ $service.name }}{{- end }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ $service.name }}
+  ports:
+    - protocol: TCP
+      port: {{ $service.port }}
+      targetPort: {{ $service.port }}
+---
+{{- end }}

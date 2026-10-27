@@ -1,0 +1,152 @@
+
+{{- range $key, $service := .Values.services }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $service.name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: {{ $service.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $service.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $service.name }}
+    spec:
+      containers:
+        - name: {{ $service.name }}
+          image: {{ $service.image | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $service.port }}
+
+          {{- if eq $key "frontend" }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ $service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ $service.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          {{- else }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ $service.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: {{ $service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+
+          {{- if eq $key "auth" }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://auth-mysql:3306/civicpulse_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: JWT_SECRET
+            - name: NOTIFICATION_SERVICE_URL
+              value: "http://notification-service:8083"
+
+          {{- else if eq $key "grievance" }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://grievance-mysql:3306/civicpulse_grievance_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: AZURE_STORAGE_CONNECTION_STRING
+            - name: AZURE_STORAGE_CONTAINER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: AZURE_STORAGE_CONTAINER_NAME
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+
+          {{- else if eq $key "notification" }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://notification-mysql:3306/civicpulse_notification_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: SPRING_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_MAIL_USERNAME
+            - name: SPRING_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_MAIL_PASSWORD
+
+          {{- else if eq $key "gateway" }}
+          env:
+            - name: FRONTEND_CORS_URL_1
+              value: "http://localhost:3000"
+            - name: FRONTEND_CORS_URL_2
+              value: "http://localhost:5173"
+            - name: AUTH_SERVICE_URL
+              value: "http://auth-service:8081"
+            - name: GRIEVANCE_SERVICE_URL
+              value: "http://grievance-service:8082"
+            - name: NOTIFICATION_SERVICE_URL
+              value: "http://notification-service:8083"
+          {{- end }}
+---
+{{- end }}

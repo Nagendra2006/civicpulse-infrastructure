@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-10-23T07:04:25.867852Z",
+  "service": "notification-service",
+  "target_canary_image": "illuriganesh123/civicpulse-notification-service:3",
+  "stable_image_baseline": "illuriganesh123/civicpulse-notification-service:2",
+  "telemetry_intervals": [
+    {
+      "interval": 1,
+      "pod": "notification-service-canary-7ff55cccb7-9rdzp",
+      "ready": false,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 1122.14,
+      "actuator_status": "DOWN",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    },
+    {
+      "interval": 2,
+      "pod": "notification-service-canary-7ff55cccb7-9rdzp",
+      "ready": false,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 1197.47,
+      "actuator_status": "DOWN",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    },
+    {
+      "interval": 3,
+      "pod": "notification-service-canary-7ff55cccb7-9rdzp",
+      "ready": false,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 1201.99,
+      "actuator_status": "DOWN",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    }
+  ],
+  "summary": {
+    "total_intervals": 3,
+    "error_count": 3,
+    "error_rate": 1.0,
+    "reasons": [
+      "Interval 1: HTTP status 0",
+      "Interval 2: HTTP status 0",
+      "Interval 3: HTTP status 0"
+    ]
+  },
+  "decision": "ROLLBACK",
+  "decision_timestamp": "2026-10-23T07:04:25.869280Z",
+  "trigger_reason": "Interval 1: HTTP status 0; Interval 2: HTTP status 0; Interval 3: HTTP status 0",
+  "rollback_duration_seconds": 4.57,
+  "final_health": "HEALTHY",
+  "active_image": "illuriganesh123/civicpulse-notification-service:2"
+}

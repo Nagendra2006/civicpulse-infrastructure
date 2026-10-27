@@ -1,0 +1,167 @@
+{{- if and .Values.canary .Values.canary.enabled }}
+{{- $svcName := .Values.canary.service }}
+{{- $port := 8089 }}
+{{- if eq $svcName "frontend" }}{{ $port = 80 }}
+{{- else if eq $svcName "auth-service" }}{{ $port = 8081 }}
+{{- else if eq $svcName "grievance-service" }}{{ $port = 8082 }}
+{{- else if eq $svcName "notification-service" }}{{ $port = 8083 }}
+{{- else if eq $svcName "gateway-service" }}{{ $port = 8089 }}
+{{- end }}
+{{- if .Values.canary.port }}{{ $port = .Values.canary.port }}{{ end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $svcName }}-canary
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ $svcName }}
+    track: canary
+spec:
+  replicas: {{ .Values.canary.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ $svcName }}
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: {{ $svcName }}
+        track: canary
+    spec:
+      containers:
+        - name: {{ $svcName }}
+          image: {{ .Values.canary.image | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.canary.port }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.canary.healthPath }}
+              port: {{ .Values.canary.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.canary.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+            initialDelaySeconds: 25
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          {{- if eq $svcName "auth-service" }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://auth-mysql:3306/civicpulse_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: JWT_SECRET
+            - name: NOTIFICATION_SERVICE_URL
+              value: "http://notification-service:8083"
+
+          {{- else if eq $svcName "grievance-service" }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://grievance-mysql:3306/civicpulse_grievance_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: AZURE_STORAGE_CONNECTION_STRING
+            - name: AZURE_STORAGE_CONTAINER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: grievance-service-secret
+                  key: AZURE_STORAGE_CONTAINER_NAME
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+
+          {{- else if eq $svcName "notification-service" }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://notification-mysql:3306/civicpulse_notification_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: SPRING_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_MAIL_USERNAME
+            - name: SPRING_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-service-secret
+                  key: SPRING_MAIL_PASSWORD
+
+          {{- else if eq $svcName "gateway-service" }}
+          env:
+            - name: FRONTEND_CORS_URL_1
+              value: "http://localhost:3000"
+            - name: FRONTEND_CORS_URL_2
+              value: "http://localhost:5173"
+            - name: AUTH_SERVICE_URL
+              value: "http://auth-service:8081"
+            - name: GRIEVANCE_SERVICE_URL
+              value: "http://grievance-service:8082"
+            - name: NOTIFICATION_SERVICE_URL
+              value: "http://notification-service:8083"
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $svcName }}-canary
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ $svcName }}
+    track: canary
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ $svcName }}
+    track: canary
+  ports:
+    - protocol: TCP
+      port: {{ .Values.canary.port }}
+      targetPort: {{ .Values.canary.port }}
+{{- end }}

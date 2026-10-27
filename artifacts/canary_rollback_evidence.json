@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-10-23T06:19:58.320820Z",
+  "service": "gateway-service",
+  "target_canary_image": "illuriganesh123/civicpulse-gateway-service:4",
+  "stable_image_baseline": "illuriganesh123/civicpulse-gateway-service:3",
+  "telemetry_intervals": [
+    {
+      "interval": 1,
+      "pod": "gateway-service-canary-7ccc6bd9dd-7nbwk",
+      "ready": false,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 1130.86,
+      "actuator_status": "DOWN",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    },
+    {
+      "interval": 2,
+      "pod": "gateway-service-canary-7ccc6bd9dd-7nbwk",
+      "ready": false,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 1157.4,
+      "actuator_status": "DOWN",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    },
+    {
+      "interval": 3,
+      "pod": "gateway-service-canary-7ccc6bd9dd-7nbwk",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 105.78,
+      "actuator_status": "UP",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    },
+    {
+      "interval": 4,
+      "pod": "gateway-service-canary-7ccc6bd9dd-7nbwk",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 0,
+      "latency_ms": 112.51,
+      "actuator_status": "UP",
+      "error": true,
+      "error_msg": "HTTP status 0"
+    }
+  ],
+  "summary": {
+    "total_intervals": 4,
+    "error_count": 4,
+    "error_rate": 1.0,
+    "reasons": [
+      "Interval 1: HTTP status 0",
+      "Interval 2: HTTP status 0",
+      "Interval 3: HTTP status 0",
+      "Interval 4: HTTP status 0"
+    ]
+  },
+  "decision": "ROLLBACK",
+  "decision_timestamp": "2026-10-23T06:19:58.322026Z",
+  "trigger_reason": "Interval 1: HTTP status 0; Interval 2: HTTP status 0; Interval 3: HTTP status 0; Interval 4: HTTP status 0",
+  "rollback_duration_seconds": 3.56,
+  "final_health": "DEGRADED",
+  "active_image": "illuriganesh123/civicpulse-gateway-service:3"
+}

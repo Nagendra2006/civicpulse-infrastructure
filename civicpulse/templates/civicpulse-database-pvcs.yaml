@@ -1,0 +1,19 @@
+{{- if .Values.databases.persistence.enabled }}
+{{- range $key, $db := .Values.databases }}
+{{- if ne $key "persistence" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $db.name }}-pvc
+  namespace: {{ $.Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ $.Values.databases.persistence.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ $.Values.databases.persistence.size | quote }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

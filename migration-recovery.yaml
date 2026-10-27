@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: auth-mysql-recovery
+  namespace: civicpulse
+spec:
+  restartPolicy: Never
+  containers:
+    - name: mysql
+      image: mysql:8.0
+      command: ["mysqld"]
+      args: ["--skip-grant-tables", "--skip-networking"]
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+  volumes:
+    - name: mysql-data
+      persistentVolumeClaim:
+        claimName: auth-mysql-migration-pvc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: grievance-mysql-recovery
+  namespace: civicpulse
+spec:
+  restartPolicy: Never
+  containers:
+    - name: mysql
+      image: mysql:8.0
+      command: ["mysqld"]
+      args: ["--skip-grant-tables", "--skip-networking"]
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+  volumes:
+    - name: mysql-data
+      persistentVolumeClaim:
+        claimName: grievance-mysql-migration-pvc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notification-mysql-recovery
+  namespace: civicpulse
+spec:
+  restartPolicy: Never
+  containers:
+    - name: mysql
+      image: mysql:8.0
+      command: ["mysqld"]
+      args: ["--skip-grant-tables", "--skip-networking"]
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+  volumes:
+    - name: mysql-data
+      persistentVolumeClaim:
+        claimName: notification-mysql-migration-pvc

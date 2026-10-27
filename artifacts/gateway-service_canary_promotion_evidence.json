@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-23T07:10:16.337915Z",
+  "service": "gateway-service",
+  "target_canary_image": "illuriganesh123/civicpulse-gateway-service:4",
+  "stable_image_baseline": "illuriganesh123/civicpulse-gateway-service:3",
+  "telemetry_intervals": [
+    {
+      "interval": 1,
+      "pod": "gateway-service-canary-786788cfc9-58q5b",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 200,
+      "latency_ms": 121.32,
+      "actuator_status": "UP",
+      "error": false,
+      "error_msg": ""
+    },
+    {
+      "interval": 2,
+      "pod": "gateway-service-canary-786788cfc9-58q5b",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 200,
+      "latency_ms": 102.72,
+      "actuator_status": "UP",
+      "error": false,
+      "error_msg": ""
+    },
+    {
+      "interval": 3,
+      "pod": "gateway-service-canary-786788cfc9-58q5b",
+      "ready": true,
+      "restarts": 0,
+      "status_code": 200,
+      "latency_ms": 155.04,
+      "actuator_status": "UP",
+      "error": false,
+      "error_msg": ""
+    }
+  ],
+  "summary": {
+    "total_intervals": 3,
+    "error_count": 0,
+    "error_rate": 0.0,
+    "reasons": []
+  },
+  "decision": "PROMOTE",
+  "promotion_timestamp": "2026-10-23T07:10:39.269600Z",
+  "promotion_duration_seconds": 22.93,
+  "final_health": "HEALTHY",
+  "active_image": "illuriganesh123/civicpulse-gateway-service:4"
+}

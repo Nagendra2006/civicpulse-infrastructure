@@ -1,0 +1,1112 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"auth-mysql","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"auth-mysql"}},"template":{"metadata":{"labels":{"app":"auth-mysql"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"auth-service-secret"}}},{"name":"MYSQL_DATABASE","value":"civicpulse_auth_db"}],"image":"mysql:8.0","imagePullPolicy":"IfNotPresent","name":"auth-mysql","ports":[{"containerPort":3306}]}]}}}}
+    creationTimestamp: "2026-09-29T06:55:18Z"
+    generation: 2
+    name: auth-mysql
+    namespace: civicpulse
+    resourceVersion: "33498"
+    uid: f3e5c2c6-83ad-40dc-abd6-c8bfa34f6574
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: auth-mysql
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: auth-mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: auth-service-secret
+          - name: MYSQL_DATABASE
+            value: civicpulse_auth_db
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          name: auth-mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-09-29T06:55:18Z"
+      lastUpdateTime: "2026-09-29T06:55:19Z"
+      message: ReplicaSet "auth-mysql-78556bd475" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:00Z"
+      lastUpdateTime: "2026-10-21T05:49:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"auth-mysql-migration","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"auth-mysql-migration"}},"template":{"metadata":{"labels":{"app":"auth-mysql-migration"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"auth-service-secret"}}},{"name":"MYSQL_DATABASE","value":"civicpulse_auth_db"}],"image":"mysql:8.0","name":"mysql","ports":[{"containerPort":3306}],"volumeMounts":[{"mountPath":"/var/lib/mysql","name":"mysql-data"}]}],"volumes":[{"name":"mysql-data","persistentVolumeClaim":{"claimName":"auth-mysql-migration-pvc"}}]}}}}
+    creationTimestamp: "2026-10-21T05:00:16Z"
+    generation: 3
+    name: auth-mysql-migration
+    namespace: civicpulse
+    resourceVersion: "34881"
+    uid: e9d75dd8-9021-4794-869a-72f80b02be92
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: auth-mysql-migration
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: auth-mysql-migration
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: auth-service-secret
+          - name: MYSQL_DATABASE
+            value: civicpulse_auth_db
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: auth-mysql-migration-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-21T05:00:16Z"
+      lastUpdateTime: "2026-10-21T05:00:16Z"
+      message: ReplicaSet "auth-mysql-migration-67679d5c9c" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T06:12:03Z"
+      lastUpdateTime: "2026-10-21T06:12:03Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"auth-service","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"auth-service"}},"template":{"metadata":{"labels":{"app":"auth-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://auth-mysql:3306/civicpulse_auth_db?useSSL=false\u0026serverTimezone=UTC\u0026allowPublicKeyRetrieval=true"},{"name":"SPRING_DATASOURCE_USERNAME","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_USERNAME","name":"auth-service-secret"}}},{"name":"SPRING_DATASOURCE_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"auth-service-secret"}}},{"name":"JWT_SECRET","valueFrom":{"secretKeyRef":{"key":"JWT_SECRET","name":"auth-service-secret"}}},{"name":"NOTIFICATION_SERVICE_URL","value":"http://notification-service:8083"}],"image":"illuriganesh123/civicpulse-auth-service:1","imagePullPolicy":"IfNotPresent","name":"auth-service","ports":[{"containerPort":8081}]}]}}}}
+    creationTimestamp: "2026-09-29T07:00:14Z"
+    generation: 1
+    name: auth-service
+    namespace: civicpulse
+    resourceVersion: "33692"
+    uid: 1fec496b-bba6-42c3-8127-abc9d0597bfa
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: auth-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: auth-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://auth-mysql:3306/civicpulse_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_USERNAME
+                name: auth-service-secret
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: auth-service-secret
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: JWT_SECRET
+                name: auth-service-secret
+          - name: NOTIFICATION_SERVICE_URL
+            value: http://notification-service:8083
+          image: illuriganesh123/civicpulse-auth-service:1
+          imagePullPolicy: IfNotPresent
+          name: auth-service
+          ports:
+          - containerPort: 8081
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-09-29T07:00:14Z"
+      lastUpdateTime: "2026-09-29T07:00:26Z"
+      message: ReplicaSet "auth-service-6d4bcb4444" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:51Z"
+      lastUpdateTime: "2026-10-21T05:49:51Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"frontend","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"frontend"}},"template":{"metadata":{"labels":{"app":"frontend"}},"spec":{"containers":[{"image":"illuriganesh123/civicpulse-frontend:3","imagePullPolicy":"IfNotPresent","name":"frontend","ports":[{"containerPort":80}]}]}}}}
+    creationTimestamp: "2026-10-01T11:26:03Z"
+    generation: 1
+    name: frontend
+    namespace: civicpulse
+    resourceVersion: "33506"
+    uid: 44c74731-34a0-43ac-87f9-eed0860ec911
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: frontend
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: frontend
+      spec:
+        containers:
+        - image: illuriganesh123/civicpulse-frontend:3
+          imagePullPolicy: IfNotPresent
+          name: frontend
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-01T11:26:03Z"
+      lastUpdateTime: "2026-10-01T11:26:13Z"
+      message: ReplicaSet "frontend-7fd464c8f5" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:00Z"
+      lastUpdateTime: "2026-10-21T05:49:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "4"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"gateway-service","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"gateway-service"}},"template":{"metadata":{"labels":{"app":"gateway-service"}},"spec":{"containers":[{"env":[{"name":"FRONTEND_CORS_URL_1","value":"http://localhost:3000"},{"name":"FRONTEND_CORS_URL_2","value":"http://localhost:5173"},{"name":"AUTH_SERVICE_URL","value":"http://auth-service:8081"},{"name":"GRIEVANCE_SERVICE_URL","value":"http://grievance-service:8082"},{"name":"NOTIFICATION_SERVICE_URL","value":"http://notification-service:8083"}],"image":"illuriganesh123/civicpulse-gateway-service:3","imagePullPolicy":"IfNotPresent","name":"gateway-service","ports":[{"containerPort":8089}]}]}}}}
+    creationTimestamp: "2026-10-01T05:25:24Z"
+    generation: 4
+    name: gateway-service
+    namespace: civicpulse
+    resourceVersion: "33501"
+    uid: 7dacb434-5131-475e-b5c8-1010e57b5083
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: gateway-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: gateway-service
+      spec:
+        containers:
+        - env:
+          - name: FRONTEND_CORS_URL_1
+            value: http://localhost:3000
+          - name: FRONTEND_CORS_URL_2
+            value: http://localhost:5173
+          - name: AUTH_SERVICE_URL
+            value: http://auth-service:8081
+          - name: GRIEVANCE_SERVICE_URL
+            value: http://grievance-service:8082
+          - name: NOTIFICATION_SERVICE_URL
+            value: http://notification-service:8083
+          image: illuriganesh123/civicpulse-gateway-service:3
+          imagePullPolicy: IfNotPresent
+          name: gateway-service
+          ports:
+          - containerPort: 8089
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-01T05:25:24Z"
+      lastUpdateTime: "2026-10-17T07:03:55Z"
+      message: ReplicaSet "gateway-service-648fcc6d96" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:00Z"
+      lastUpdateTime: "2026-10-21T05:49:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 4
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"grievance-mysql","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"grievance-mysql"}},"template":{"metadata":{"labels":{"app":"grievance-mysql"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"grievance-service-secret"}}},{"name":"MYSQL_DATABASE","value":"civicpulse_grievance_db"}],"image":"mysql:8.0","imagePullPolicy":"IfNotPresent","name":"grievance-mysql","ports":[{"containerPort":3306}],"resources":{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}}]}}}}
+    creationTimestamp: "2026-09-29T04:56:49Z"
+    generation: 2
+    name: grievance-mysql
+    namespace: civicpulse
+    resourceVersion: "33489"
+    uid: 79714f78-8811-4e5b-b851-275c03ae2edf
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: grievance-mysql
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: grievance-mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: grievance-service-secret
+          - name: MYSQL_DATABASE
+            value: civicpulse_grievance_db
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          name: grievance-mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-09-29T04:56:49Z"
+      lastUpdateTime: "2026-10-17T07:03:55Z"
+      message: ReplicaSet "grievance-mysql-586977b4b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:00Z"
+      lastUpdateTime: "2026-10-21T05:49:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"grievance-mysql-migration","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"grievance-mysql-migration"}},"template":{"metadata":{"labels":{"app":"grievance-mysql-migration"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"grievance-service-secret"}}},{"name":"MYSQL_DATABASE","value":"civicpulse_grievance_db"}],"image":"mysql:8.0","name":"mysql","ports":[{"containerPort":3306}],"volumeMounts":[{"mountPath":"/var/lib/mysql","name":"mysql-data"}]}],"volumes":[{"name":"mysql-data","persistentVolumeClaim":{"claimName":"grievance-mysql-migration-pvc"}}]}}}}
+    creationTimestamp: "2026-10-21T05:00:16Z"
+    generation: 3
+    name: grievance-mysql-migration
+    namespace: civicpulse
+    resourceVersion: "34886"
+    uid: 7309e62f-adb6-4375-be9b-fdf4fa474bbb
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: grievance-mysql-migration
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: grievance-mysql-migration
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: grievance-service-secret
+          - name: MYSQL_DATABASE
+            value: civicpulse_grievance_db
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: grievance-mysql-migration-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-21T05:00:16Z"
+      lastUpdateTime: "2026-10-21T05:00:16Z"
+      message: ReplicaSet "grievance-mysql-migration-7d7f9fdccf" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T06:12:03Z"
+      lastUpdateTime: "2026-10-21T06:12:03Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"grievance-service","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"grievance-service"}},"template":{"metadata":{"labels":{"app":"grievance-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://grievance-mysql:3306/civicpulse_grievance_db"},{"name":"SPRING_DATASOURCE_USERNAME","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_USERNAME","name":"grievance-service-secret"}}},{"name":"SPRING_DATASOURCE_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"grievance-service-secret"}}},{"name":"AZURE_STORAGE_CONNECTION_STRING","valueFrom":{"secretKeyRef":{"key":"AZURE_STORAGE_CONNECTION_STRING","name":"grievance-service-secret"}}},{"name":"AZURE_STORAGE_CONTAINER_NAME","valueFrom":{"secretKeyRef":{"key":"AZURE_STORAGE_CONTAINER_NAME","name":"grievance-service-secret"}}}],"image":"illuriganesh123/civicpulse-grievance-service:13","imagePullPolicy":"IfNotPresent","name":"grievance-service","ports":[{"containerPort":8082}],"resources":{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}}]}}}}
+    creationTimestamp: "2026-09-29T05:06:56Z"
+    generation: 3
+    name: grievance-service
+    namespace: civicpulse
+    resourceVersion: "33683"
+    uid: 2b298ad1-32f8-4969-8ebb-dfcc9486bcfe
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: grievance-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: grievance-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://grievance-mysql:3306/civicpulse_grievance_db
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_USERNAME
+                name: grievance-service-secret
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: grievance-service-secret
+          - name: AZURE_STORAGE_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                key: AZURE_STORAGE_CONNECTION_STRING
+                name: grievance-service-secret
+          - name: AZURE_STORAGE_CONTAINER_NAME
+            valueFrom:
+              secretKeyRef:
+                key: AZURE_STORAGE_CONTAINER_NAME
+                name: grievance-service-secret
+          image: illuriganesh123/civicpulse-grievance-service:13
+          imagePullPolicy: IfNotPresent
+          name: grievance-service
+          ports:
+          - containerPort: 8082
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-09-29T05:06:56Z"
+      lastUpdateTime: "2026-09-29T05:07:14Z"
+      message: ReplicaSet "grievance-service-78c97494c8" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:49Z"
+      lastUpdateTime: "2026-10-21T05:49:49Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"notification-mysql","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"notification-mysql"}},"template":{"metadata":{"labels":{"app":"notification-mysql"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"notification-service-secret"}}},{"name":"MYSQL_DATABASE","value":"civicpulse_notification_db"}],"image":"mysql:8.0","imagePullPolicy":"IfNotPresent","name":"notification-mysql","ports":[{"containerPort":3306}]}]}}}}
+    creationTimestamp: "2026-10-01T04:48:33Z"
+    generation: 2
+    name: notification-mysql
+    namespace: civicpulse
+    resourceVersion: "33476"
+    uid: 33c05c52-d23f-4836-a1ad-80a4843de63d
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: notification-mysql
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: notification-mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: notification-service-secret
+          - name: MYSQL_DATABASE
+            value: civicpulse_notification_db
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          name: notification-mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-01T04:48:33Z"
+      lastUpdateTime: "2026-10-01T04:48:35Z"
+      message: ReplicaSet "notification-mysql-7cfb995675" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:48:59Z"
+      lastUpdateTime: "2026-10-21T05:48:59Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"notification-mysql-migration","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"notification-mysql-migration"}},"template":{"metadata":{"labels":{"app":"notification-mysql-migration"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"notification-service-secret"}}},{"name":"MYSQL_DATABASE","value":"civicpulse_notification_db"}],"image":"mysql:8.0","name":"mysql","ports":[{"containerPort":3306}],"volumeMounts":[{"mountPath":"/var/lib/mysql","name":"mysql-data"}]}],"volumes":[{"name":"mysql-data","persistentVolumeClaim":{"claimName":"notification-mysql-migration-pvc"}}]}}}}
+    creationTimestamp: "2026-10-21T05:00:16Z"
+    generation: 3
+    name: notification-mysql-migration
+    namespace: civicpulse
+    resourceVersion: "34884"
+    uid: f95be03f-8a6f-4253-9011-e149a629832d
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: notification-mysql-migration
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: notification-mysql-migration
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: notification-service-secret
+          - name: MYSQL_DATABASE
+            value: civicpulse_notification_db
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: notification-mysql-migration-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-21T05:00:16Z"
+      lastUpdateTime: "2026-10-21T05:00:16Z"
+      message: ReplicaSet "notification-mysql-migration-7bf8c49f9f" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T06:12:03Z"
+      lastUpdateTime: "2026-10-21T06:12:03Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"notification-service","namespace":"civicpulse"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"notification-service"}},"template":{"metadata":{"labels":{"app":"notification-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://notification-mysql:3306/civicpulse_notification_db?useSSL=false\u0026allowPublicKeyRetrieval=true\u0026serverTimezone=UTC"},{"name":"SPRING_DATASOURCE_USERNAME","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_USERNAME","name":"notification-service-secret"}}},{"name":"SPRING_DATASOURCE_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_DATASOURCE_PASSWORD","name":"notification-service-secret"}}},{"name":"SPRING_MAIL_USERNAME","valueFrom":{"secretKeyRef":{"key":"SPRING_MAIL_USERNAME","name":"notification-service-secret"}}},{"name":"SPRING_MAIL_PASSWORD","valueFrom":{"secretKeyRef":{"key":"SPRING_MAIL_PASSWORD","name":"notification-service-secret"}}}],"image":"illuriganesh123/civicpulse-notification-service:2","imagePullPolicy":"IfNotPresent","name":"notification-service","ports":[{"containerPort":8083}]}]}}}}
+    creationTimestamp: "2026-10-01T04:52:14Z"
+    generation: 2
+    name: notification-service
+    namespace: civicpulse
+    resourceVersion: "33674"
+    uid: 3a719da5-fd9b-40e4-8201-ffbf696d4f81
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: notification-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: notification-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://notification-mysql:3306/civicpulse_notification_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_USERNAME
+                name: notification-service-secret
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_DATASOURCE_PASSWORD
+                name: notification-service-secret
+          - name: SPRING_MAIL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_MAIL_USERNAME
+                name: notification-service-secret
+          - name: SPRING_MAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SPRING_MAIL_PASSWORD
+                name: notification-service-secret
+          image: illuriganesh123/civicpulse-notification-service:2
+          imagePullPolicy: IfNotPresent
+          name: notification-service
+          ports:
+          - containerPort: 8083
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-01T04:52:14Z"
+      lastUpdateTime: "2026-10-01T05:00:01Z"
+      message: ReplicaSet "notification-service-b8f54df64" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-21T05:49:46Z"
+      lastUpdateTime: "2026-10-21T05:49:46Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"auth-mysql","namespace":"civicpulse"},"spec":{"ports":[{"port":3306,"protocol":"TCP","targetPort":3306}],"selector":{"app":"auth-mysql"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-09-29T06:55:18Z"
+    name: auth-mysql
+    namespace: civicpulse
+    resourceVersion: "5607"
+    uid: 1cee8c5f-4a66-49dd-91c2-ce73256138b3
+  spec:
+    clusterIP: 10.96.211.242
+    clusterIPs:
+    - 10.96.211.242
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      app: auth-mysql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"auth-service","namespace":"civicpulse"},"spec":{"ports":[{"port":8081,"protocol":"TCP","targetPort":8081}],"selector":{"app":"auth-service"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-09-29T07:00:20Z"
+    name: auth-service
+    namespace: civicpulse
+    resourceVersion: "5875"
+    uid: 8464a7a6-280a-46fc-8153-36776271a14d
+  spec:
+    clusterIP: 10.109.64.238
+    clusterIPs:
+    - 10.109.64.238
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 8081
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      app: auth-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"frontend-service","namespace":"civicpulse"},"spec":{"ports":[{"port":80,"protocol":"TCP","targetPort":80}],"selector":{"app":"frontend"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-10-01T11:26:12Z"
+    name: frontend-service
+    namespace: civicpulse
+    resourceVersion: "18116"
+    uid: b3161d1a-e090-497c-a940-55b996095cc1
+  spec:
+    clusterIP: 10.97.196.217
+    clusterIPs:
+    - 10.97.196.217
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: frontend
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"gateway-service","namespace":"civicpulse"},"spec":{"ports":[{"port":8089,"protocol":"TCP","targetPort":8089}],"selector":{"app":"gateway-service"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-10-01T05:25:34Z"
+    name: gateway-service
+    namespace: civicpulse
+    resourceVersion: "9217"
+    uid: 98d84f04-68f8-4d28-822b-81dab72ca1eb
+  spec:
+    clusterIP: 10.101.240.190
+    clusterIPs:
+    - 10.101.240.190
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 8089
+      protocol: TCP
+      targetPort: 8089
+    selector:
+      app: gateway-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"grievance-mysql","namespace":"civicpulse"},"spec":{"ports":[{"port":3306,"protocol":"TCP","targetPort":3306}],"selector":{"app":"grievance-mysql"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-09-29T05:02:25Z"
+    name: grievance-mysql
+    namespace: civicpulse
+    resourceVersion: "1870"
+    uid: 5b8606e4-a363-459e-8ed6-4c8e94e902c3
+  spec:
+    clusterIP: 10.101.160.189
+    clusterIPs:
+    - 10.101.160.189
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      app: grievance-mysql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"grievance-service","namespace":"civicpulse"},"spec":{"ports":[{"port":8082,"protocol":"TCP","targetPort":8082}],"selector":{"app":"grievance-service"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-09-29T05:09:51Z"
+    name: grievance-service
+    namespace: civicpulse
+    resourceVersion: "2250"
+    uid: 722041ff-a9f8-459f-a230-2b2a0eb29903
+  spec:
+    clusterIP: 10.101.187.236
+    clusterIPs:
+    - 10.101.187.236
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 8082
+      protocol: TCP
+      targetPort: 8082
+    selector:
+      app: grievance-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"notification-mysql","namespace":"civicpulse"},"spec":{"ports":[{"port":3306,"protocol":"TCP","targetPort":3306}],"selector":{"app":"notification-mysql"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-10-01T04:49:21Z"
+    name: notification-mysql
+    namespace: civicpulse
+    resourceVersion: "7345"
+    uid: a0037a44-d133-4155-9c71-3ab2a7f40d63
+  spec:
+    clusterIP: 10.110.163.53
+    clusterIPs:
+    - 10.110.163.53
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      app: notification-mysql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"notification-service","namespace":"civicpulse"},"spec":{"ports":[{"port":8083,"protocol":"TCP","targetPort":8083}],"selector":{"app":"notification-service"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-10-01T05:03:45Z"
+    name: notification-service
+    namespace: civicpulse
+    resourceVersion: "8154"
+    uid: badadb3e-bab5-47dd-84e3-fcb3b9eeeb68
+  spec:
+    clusterIP: 10.99.100.53
+    clusterIPs:
+    - 10.99.100.53
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 8083
+      protocol: TCP
+      targetPort: 8083
+    selector:
+      app: notification-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""

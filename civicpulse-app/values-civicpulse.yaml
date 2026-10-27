@@ -1,0 +1,75 @@
+namespace: civicpulse
+
+services:
+  auth:
+    name: auth-service
+    image: illuriganesh123/civicpulse-auth-service:2
+    port: 8081
+    replicas: 1
+
+  grievance:
+    name: grievance-service
+    image: illuriganesh123/civicpulse-grievance-service:14
+    port: 8082
+    replicas: 1
+
+  notification:
+    name: notification-service
+    image: illuriganesh123/civicpulse-notification-service:3
+    port: 8083
+    replicas: 1
+
+  gateway:
+    name: gateway-service
+    image: illuriganesh123/civicpulse-gateway-service:4
+    port: 8089
+    replicas: 1
+
+  frontend:
+    name: frontend
+    image: illuriganesh123/civicpulse-frontend:4
+    port: 80
+    replicas: 1
+
+
+canary:
+  enabled: false
+  service: gateway-service
+  image: illuriganesh123/civicpulse-gateway-service:4-canary
+  port: 8089
+  replicas: 1
+  healthPath: /actuator/health
+
+databases:
+  auth:
+    name: auth-mysql
+    image: mysql:8.0
+    database: civicpulse_auth_db
+    secretName: auth-service-secret
+    replicas: 1
+
+  grievance:
+    name: grievance-mysql
+    image: mysql:8.0
+    database: civicpulse_grievance_db
+    secretName: grievance-service-secret
+    replicas: 1
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+
+  notification:
+    name: notification-mysql
+    image: mysql:8.0
+    database: civicpulse_notification_db
+    secretName: notification-service-secret
+    replicas: 1
+
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: standard
